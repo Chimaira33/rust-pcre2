@@ -1,6 +1,6 @@
 [package]
 name = "pcre2-sys"
-version = "0.2.4"  #:version
+version = "0.2.4"
 authors = ["Andrew Gallant <jamslam@gmail.com>"]
 description = "Low level bindings to PCRE2."
 documentation = "https://docs.rs/pcre2-sys"
@@ -13,14 +13,13 @@ categories = ["external-ffi-bindings"]
 edition = "2018"
 
 [features]
-default = ["utf8"]
+default = ["utf32"]
 utf8 = []
 utf32 = []
 
-
 [dependencies]
-libc = "0.2"
+libc = "0.2.155"
 
 [build-dependencies]
-cc = { version = "1", features = ["parallel"] }
-pkg-config = "0.3.13"
+cc = { version = "1.0.98", features = ["parallel"] }
+pkg-config = "0.3.30"

@@ -46,7 +46,7 @@ impl Error {
     pub(crate) fn compile(code: c_int, offset: usize) -> Error {
         Error {
             kind: ErrorKind::Compile,
-            code: code,
+            code,
             offset: Some(offset),
         }
     }
@@ -55,7 +55,7 @@ impl Error {
     pub(crate) fn jit(code: c_int) -> Error {
         Error {
             kind: ErrorKind::JIT,
-            code: code,
+            code,
             offset: None,
         }
     }
@@ -64,7 +64,7 @@ impl Error {
     pub(crate) fn matching(code: c_int) -> Error {
         Error {
             kind: ErrorKind::Match,
-            code: code,
+            code,
             offset: None,
         }
     }
@@ -73,7 +73,7 @@ impl Error {
     pub(crate) fn info(code: c_int) -> Error {
         Error {
             kind: ErrorKind::Info,
-            code: code,
+            code,
             offset: None,
         }
     }
@@ -82,7 +82,7 @@ impl Error {
     pub(crate) fn option(code: c_int) -> Error {
         Error {
             kind: ErrorKind::Option,
-            code: code,
+            code,
             offset: None,
         }
     }

@@ -1,28 +1,45 @@
 [package]
-name = "pcre2"
-version = "0.2.3"  #:version
-authors = ["Andrew Gallant <jamslam@gmail.com>"]
-description = "High level wrapper library for PCRE2."
+authors       = ["Andrew Gallant <jamslam@gmail.com>"]
+categories    = ["text-processing"]
+description   = "High level wrapper library for PCRE2."
 documentation = "https://docs.rs/pcre2"
-homepage = "https://github.com/BurntSushi/rust-pcre2"
-repository = "https://github.com/BurntSushi/rust-pcre2"
-readme = "README.md"
-keywords = ["pcre", "pcre2", "regex", "jit", "perl"]
-license = "Unlicense/MIT"
-categories = ["text-processing"]
-edition = "2021"
+edition       = "2021"
+homepage      = "https://github.com/BurntSushi/rust-pcre2"
+keywords      = ["jit", "pcre", "pcre2", "perl", "regex"]
+license       = "Unlicense/MIT"
+name          = "pcre2"
+readme        = "README.md"
+repository    = "https://github.com/BurntSushi/rust-pcre2"
+version       = "0.2.3"
 
 [workspace]
 members = ["pcre2-sys"]
 
 [features]
-default = ["utf8"]
-utf8 = ["pcre2-sys/utf8"]
-utf32 = ["pcre2-sys/utf32"]
+default      = ["utf32"]
 static-pcre2 = []
+utf32        = ["pcre2-sys/utf32"]
+utf8         = ["pcre2-sys/utf8"]
 
 [dependencies]
-libc = "0.2.46"
-log = "0.4.5"
-pcre2-sys = { version = "0.2.0", path = "pcre2-sys" }
-thread_local = "1"
+libc         = "0.2.155"
+log          = "0.4.21"
+pcre2-sys    = { version = "0.2.4", path = "pcre2-sys" }
+thread_local = "1.1.8"
+
+[profile.dev]
+codegen-units = 256
+incremental   = true
+lto           = "off"
+opt-level     = 1
+
+[profile.release]
+codegen-units    = 1
+debug            = 0
+debug-assertions = false
+incremental      = false
+lto              = "thin"
+opt-level        = 3
+overflow-checks  = false
+panic            = "abort"
+strip            = true

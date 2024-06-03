@@ -153,7 +153,7 @@ pub trait CodeUnitWidth: std::fmt::Debug {
 
     unsafe fn pcre2_get_ovector_pointer(arg1: *mut Self::pcre2_match_data) -> *mut usize;
     unsafe fn pcre2_get_ovector_count(arg1: *mut Self::pcre2_match_data) -> u32;
-
+    #[allow(clippy::too_many_arguments)]
     unsafe fn pcre2_substitute(
         code: *const Self::pcre2_code,
         subject: Self::PCRE2_SPTR,
@@ -719,7 +719,7 @@ impl<W: CodeUnitWidth> Code<W> {
                 ptr::null_mut(),
                 repl_ptr,
                 repl_len,
-                output.as_mut_ptr() as *mut W::PCRE2_CHAR,
+                output.as_mut_ptr(),
                 output_len as *mut usize,
             )
         };
@@ -775,19 +775,11 @@ impl<W: CodeUnitWidth> CompileContext<W> {
 }
 
 /// Configuration for PCRE2's match context.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct MatchConfig {
     /// When set, a custom JIT stack will be created with the given maximum
     /// size.
     pub max_jit_stack_size: Option<usize>,
-}
-
-impl Default for MatchConfig {
-    fn default() -> MatchConfig {
-        MatchConfig {
-            max_jit_stack_size: None,
-        }
-    }
 }
 
 /// A low level representation of a match data block.
@@ -841,7 +833,7 @@ impl<W: CodeUnitWidth> MatchData<W> {
             None => None,
             Some(_) if !code.compiled_jit => None,
             Some(max) => {
-                let stack = unsafe { W::pcre2_jit_stack_create(cmp::min(max, 32 * 1 << 10), max) };
+                let stack = unsafe { W::pcre2_jit_stack_create(cmp::min(max, 32 << 10), max) };
                 assert!(!stack.is_null(), "failed to allocate JIT stack");
 
                 unsafe { W::pcre2_jit_stack_assign(match_context, stack as *mut c_void) };

@@ -124,6 +124,12 @@ pub struct RegexBuilder<W: CodeUnitWidth> {
     _phantom: std::marker::PhantomData<W>,
 }
 
+impl<W: CodeUnitWidth> Default for RegexBuilder<W> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<W: CodeUnitWidth> RegexBuilder<W> {
     /// Create a new builder with a default configuration.
     pub fn new() -> Self {
@@ -191,7 +197,7 @@ impl<W: CodeUnitWidth> RegexBuilder<W> {
         }
         Ok(Regex {
             config: Arc::new(self.config.clone()),
-            pattern: pattern,
+            pattern,
             code: Arc::new(code),
             capture_names: Arc::new(capture_names),
             capture_names_idx: Arc::new(idx),
@@ -449,7 +455,7 @@ impl<W: CodeUnitWidth> Regex<W> {
         Matches {
             re: self,
             match_data: self.match_data(),
-            subject: subject,
+            subject,
             last_end: 0,
             last_match: None,
         }
@@ -470,7 +476,7 @@ impl<W: CodeUnitWidth> Regex<W> {
             .captures_read(&mut locs, subject)?
             .map(move |_| Captures {
                 subject,
-                locs: locs,
+                locs,
                 idx: Arc::clone(&self.capture_names_idx),
             }))
     }
@@ -484,7 +490,7 @@ impl<W: CodeUnitWidth> Regex<W> {
     ) -> CaptureMatches<'r, 's, W> {
         CaptureMatches {
             re: self,
-            subject: subject,
+            subject,
             last_end: 0,
             last_match: None,
         }
@@ -899,6 +905,7 @@ impl<'s, W: CodeUnitWidth> Captures<'s, W> {
     ///
     /// This is always at least `1`, since every regex has at least one capture
     /// group that corresponds to the full match.
+    #[allow(clippy::len_without_is_empty)]
     #[inline]
     pub fn len(&self) -> usize {
         self.locs.len()
@@ -1077,7 +1084,7 @@ impl<'r, 's, W: CodeUnitWidth> Iterator for CaptureMatches<'r, 's, W> {
         self.last_match = Some(m.end());
         Some(Ok(Captures {
             subject: self.subject,
-            locs: locs,
+            locs,
             idx: Arc::clone(&self.re.capture_names_idx),
         }))
     }
